@@ -29,6 +29,28 @@ extension ClampedInteger where Base == Int {
     static var max: ClampedInteger<Int> { ClampedInteger(base: .max) }
 }
 
+extension ClampedInteger {
+    public init<T>(_ source: T) where T : BinaryInteger {
+        if source < T(Base.min) {
+            base = .min
+        } else if source > T(Base.max) {
+            base = .max
+        } else {
+            base = Base(source)
+        }
+    }
+
+    public init<T>(_ source: T) where T : BinaryFloatingPoint {
+        if source < T(Base.min) {
+            base = .min
+        } else if source > T(Base.max) {
+            base = .max
+        } else {
+            base = Base(source)
+        }
+    }
+}
+
 extension ClampedInteger: AdditiveArithmetic {
     public static func - (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
         let report = lhs.base.subtractingReportingOverflow(rhs.base)

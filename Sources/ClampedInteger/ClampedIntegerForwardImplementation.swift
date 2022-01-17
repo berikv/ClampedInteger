@@ -66,10 +66,6 @@ extension ClampedInteger { /* BinaryInteger */
     public var bitWidth: Int { base.bitWidth }
     public var trailingZeroBitCount: Int { base.trailingZeroBitCount }
 
-    public init<T>(_ source: T) where T : BinaryInteger {
-        base = Base(source)
-    }
-
     public init?<T>(exactly source: T) where T : BinaryInteger {
         guard let value = Base(exactly: source) else { return nil }
         self.base = value
@@ -86,10 +82,6 @@ extension ClampedInteger { /* BinaryInteger */
     public init?<T>(exactly source: T) where T : BinaryFloatingPoint {
         guard let value = Base(exactly: source) else { return nil }
         self.base = value
-    }
-
-    public init<T>(_ source: T) where T : BinaryFloatingPoint {
-        base = Base(source)
     }
 
     public static func / (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
