@@ -12,7 +12,7 @@
  * are forwarded to the Wrapped integer type.
  *
  */
-struct ClampedInteger<Base> where Base: FixedWidthInteger {
+struct ClampedInteger<Base>: BinaryInteger where Base: FixedWidthInteger {
     var value: Base
 }
 
@@ -31,46 +31,35 @@ extension ClampedInteger where Base == Int {
 
 extension ClampedInteger: AdditiveArithmetic {
     static func - (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
-        // Overflow test when lhs > rhs:
-        //
-        //   lhs - rhs >= .max  =>  lhs >= .max + rhs
-        //
-        // Underflow test when lhs < rhs:
-        //
-        //  lhs - rhs < .min  =>  lhs < .min + rhs
+        let report = lhs.value.subtractingReportingOverflow(rhs.value)
 
-        if lhs.value > rhs.value && rhs.value < 0 && lhs.value >= .max + rhs.value {
-            return Self(value: .max)
-        } else if lhs.value < rhs.value && rhs.value > 0 && lhs.value < .min + rhs.value {
-            return Self(value: .min)
+        if report.overflow {
+            return Self(value: rhs.value > 0 ? .min : .max)
         } else {
-            return Self(lhs.value - rhs.value)
+            return Self(value: report.partialValue)
         }
     }
 
     static func + (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
-        if lhs.value > 0 && rhs.value > Base.max - lhs.value {
-            return Self(value: Base.max)
-        } else if lhs.value < 0 && rhs.value < Base.min - lhs.value {
-            return Self(value: .min)
+        let report = lhs.value.addingReportingOverflow(rhs.value)
+
+        if report.overflow {
+            return Self(value: rhs.value > 0 ? .max : .min)
         } else {
-            return Self(lhs.value + rhs.value)
+            return Self(value: report.partialValue)
         }
     }
 }
 
 extension ClampedInteger {
     static func * (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
-        if rhs.value == .zero { return .zero }
+        let report = lhs.value.multipliedReportingOverflow(by: rhs.value)
 
-        let result = rhs.value &* lhs.value
-
-        if lhs.value == result / rhs.value {
-            return Self(result)
-        } else if (lhs.value > .zero) == (rhs.value > .zero) {
-            return Self(value: .max)
+        if report.overflow {
+            let signEqual = (lhs.value > 0) == (rhs.value > 0)
+            return Self(value: signEqual ? .max : .min)
         } else {
-            return Self(value: .min)
+            return Self(value: report.partialValue)
         }
     }
 

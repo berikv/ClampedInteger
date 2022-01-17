@@ -59,7 +59,7 @@ extension ClampedInteger: ExpressibleByIntegerLiteral {
 
 extension ClampedInteger: SignedInteger {}
 
-extension ClampedInteger: BinaryInteger {
+extension ClampedInteger { /* BinaryInteger */
 
     var magnitude: Base.Magnitude { value.magnitude }
     var words: Base.Words { value.words }
