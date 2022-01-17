@@ -12,58 +12,58 @@
  * are forwarded to the Wrapped integer type.
  *
  */
-struct ClampedInteger<Base>: BinaryInteger where Base: FixedWidthInteger {
-    var value: Base
+public struct ClampedInteger<Base>: BinaryInteger where Base: FixedWidthInteger {
+    var base: Base
 }
 
 /// Set Int as the default Base generic parameter type
 extension ClampedInteger where Base == Int {
     init(integerLiteral value: Int.IntegerLiteralType) {
-        self.value = Int(integerLiteral: value)
+        self.base = Int(integerLiteral: value)
     }
 
-    static var zero: ClampedInteger<Int> { ClampedInteger(value: .zero) }
+    static var zero: ClampedInteger<Int> { ClampedInteger(base: .zero) }
 
-    static var min: ClampedInteger<Int> { ClampedInteger(value: .min) }
+    static var min: ClampedInteger<Int> { ClampedInteger(base: .min) }
 
-    static var max: ClampedInteger<Int> { ClampedInteger(value: .max) }
+    static var max: ClampedInteger<Int> { ClampedInteger(base: .max) }
 }
 
 extension ClampedInteger: AdditiveArithmetic {
-    static func - (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
-        let report = lhs.value.subtractingReportingOverflow(rhs.value)
+    public static func - (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
+        let report = lhs.base.subtractingReportingOverflow(rhs.base)
 
         if report.overflow {
-            return Self(value: rhs.value > 0 ? .min : .max)
+            return Self(base: rhs.base > 0 ? .min : .max)
         } else {
-            return Self(value: report.partialValue)
+            return Self(base: report.partialValue)
         }
     }
 
-    static func + (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
-        let report = lhs.value.addingReportingOverflow(rhs.value)
+    public static func + (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
+        let report = lhs.base.addingReportingOverflow(rhs.base)
 
         if report.overflow {
-            return Self(value: rhs.value > 0 ? .max : .min)
+            return Self(base: rhs.base > 0 ? .max : .min)
         } else {
-            return Self(value: report.partialValue)
+            return Self(base: report.partialValue)
         }
     }
 }
 
 extension ClampedInteger {
-    static func * (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
-        let report = lhs.value.multipliedReportingOverflow(by: rhs.value)
+    public static func * (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
+        let report = lhs.base.multipliedReportingOverflow(by: rhs.base)
 
         if report.overflow {
-            let signEqual = (lhs.value > 0) == (rhs.value > 0)
-            return Self(value: signEqual ? .max : .min)
+            let signEqual = (lhs.base > 0) == (rhs.base > 0)
+            return Self(base: signEqual ? .max : .min)
         } else {
-            return Self(value: report.partialValue)
+            return Self(base: report.partialValue)
         }
     }
 
-    static func *= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
+    public static func *= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
         lhs = lhs * rhs
     }
 }

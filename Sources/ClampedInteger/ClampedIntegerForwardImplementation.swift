@@ -2,58 +2,58 @@
 // Below implementations forward to the Base type
 
 extension ClampedInteger: Equatable, Comparable {
-    static func ==(_ lhs: ClampedInteger<Base>, _ rhs: ClampedInteger<Base>) -> Bool {
-        lhs.value == rhs.value
+    public static func ==(_ lhs: ClampedInteger<Base>, _ rhs: ClampedInteger<Base>) -> Bool {
+        lhs.base == rhs.base
     }
 
-    static func <(_ lhs: ClampedInteger<Base>, _ rhs: ClampedInteger<Base>) -> Bool {
-        lhs.value < rhs.value
+    public static func <(_ lhs: ClampedInteger<Base>, _ rhs: ClampedInteger<Base>) -> Bool {
+        lhs.base < rhs.base
     }
 }
 
 extension ClampedInteger: FixedWidthInteger {
-    static var max: Self { ClampedInteger(value: Base.max) }
-    static var min: Self { ClampedInteger(value: Base.min) }
+    public static var max: Self { ClampedInteger(base: Base.max) }
+    public static var min: Self { ClampedInteger(base: Base.min) }
 
-    static var bitWidth: Int { Base.bitWidth }
+    public static var bitWidth: Int { Base.bitWidth }
 
-    init(_truncatingBits bits: UInt) { fatalError() }
+    public init(_truncatingBits bits: UInt) { fatalError() }
 
-    var nonzeroBitCount: Int { value.nonzeroBitCount }
-    var leadingZeroBitCount: Int { value.leadingZeroBitCount }
-    var byteSwapped: ClampedInteger<Base> { Self(value.byteSwapped) }
+    public var nonzeroBitCount: Int { base.nonzeroBitCount }
+    public var leadingZeroBitCount: Int { base.leadingZeroBitCount }
+    public var byteSwapped: ClampedInteger<Base> { Self(base.byteSwapped) }
 
-    func addingReportingOverflow(_ rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
+    public func addingReportingOverflow(_ rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
         return (self + rhs, false)
     }
 
-    func subtractingReportingOverflow(_ rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
+    public func subtractingReportingOverflow(_ rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
         return (self - rhs, false)
     }
 
-    func multipliedReportingOverflow(by rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
+    public func multipliedReportingOverflow(by rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
         return (self * rhs, false)
     }
 
-    func dividedReportingOverflow(by rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
-        let result = value.dividedReportingOverflow(by: rhs.value)
+    public func dividedReportingOverflow(by rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
+        let result = base.dividedReportingOverflow(by: rhs.base)
         return (Self(result.partialValue), result.overflow)
     }
 
-    func remainderReportingOverflow(dividingBy rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
-        let result = value.remainderReportingOverflow(dividingBy: rhs.value)
+    public func remainderReportingOverflow(dividingBy rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
+        let result = base.remainderReportingOverflow(dividingBy: rhs.base)
         return (Self(result.partialValue), result.overflow)
     }
 
-    func dividingFullWidth(_ dividend: (high: ClampedInteger<Base>, low: Base.Magnitude)) -> (quotient: ClampedInteger<Base>, remainder: ClampedInteger<Base>) {
-        let result = value.dividingFullWidth((dividend.high.value, dividend.low))
+    public func dividingFullWidth(_ dividend: (high: ClampedInteger<Base>, low: Base.Magnitude)) -> (quotient: ClampedInteger<Base>, remainder: ClampedInteger<Base>) {
+        let result = base.dividingFullWidth((dividend.high.base, dividend.low))
         return (Self(result.quotient), Self(result.remainder))
     }
 }
 
 extension ClampedInteger: ExpressibleByIntegerLiteral {
-    init(integerLiteral value: Base.IntegerLiteralType) {
-        self.value = Base(integerLiteral: value)
+    public init(integerLiteral value: Base.IntegerLiteralType) {
+        self.base = Base(integerLiteral: value)
     }
 }
 
@@ -61,74 +61,74 @@ extension ClampedInteger: SignedInteger {}
 
 extension ClampedInteger { /* BinaryInteger */
 
-    var magnitude: Base.Magnitude { value.magnitude }
-    var words: Base.Words { value.words }
-    var bitWidth: Int { value.bitWidth }
-    var trailingZeroBitCount: Int { value.trailingZeroBitCount }
+    public var magnitude: Base.Magnitude { base.magnitude }
+    public var words: Base.Words { base.words }
+    public var bitWidth: Int { base.bitWidth }
+    public var trailingZeroBitCount: Int { base.trailingZeroBitCount }
 
-    init<T>(_ source: T) where T : BinaryInteger {
-        value = Base(source)
+    public init<T>(_ source: T) where T : BinaryInteger {
+        base = Base(source)
     }
 
-    init?<T>(exactly source: T) where T : BinaryInteger {
+    public init?<T>(exactly source: T) where T : BinaryInteger {
         guard let value = Base(exactly: source) else { return nil }
-        self.value = value
+        self.base = value
     }
 
-    init<T>(truncatingIfNeeded source: T) where T : BinaryInteger {
-        value = Base(truncatingIfNeeded: source)
+    public init<T>(truncatingIfNeeded source: T) where T : BinaryInteger {
+        base = Base(truncatingIfNeeded: source)
     }
 
-    init<T>(clamping source: T) where T : BinaryInteger {
-        value = Base(clamping: source)
+    public init<T>(clamping source: T) where T : BinaryInteger {
+        base = Base(clamping: source)
     }
 
-    init?<T>(exactly source: T) where T : BinaryFloatingPoint {
+    public init?<T>(exactly source: T) where T : BinaryFloatingPoint {
         guard let value = Base(exactly: source) else { return nil }
-        self.value = value
+        self.base = value
     }
 
-    init<T>(_ source: T) where T : BinaryFloatingPoint {
-        value = Base(source)
+    public init<T>(_ source: T) where T : BinaryFloatingPoint {
+        base = Base(source)
     }
 
-    static func / (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
-        Self(lhs.value / rhs.value)
+    public static func / (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
+        Self(lhs.base / rhs.base)
     }
 
-    static func /= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
-        lhs.value /= rhs.value
+    public static func /= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
+        lhs.base /= rhs.base
     }
 
-    static func % (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
-        Self(lhs.value % rhs.value)
+    public static func % (lhs: ClampedInteger, rhs: ClampedInteger) -> ClampedInteger {
+        Self(lhs.base % rhs.base)
     }
 
-    static func %= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
-        lhs.value %= rhs.value
+    public static func %= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
+        lhs.base %= rhs.base
     }
 
-    static func &= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
-        lhs.value &= rhs.value
+    public static func &= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
+        lhs.base &= rhs.base
     }
 
-    static func |= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
-        lhs.value |= rhs.value
+    public static func |= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
+        lhs.base |= rhs.base
     }
 
-    static func ^= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
-        lhs.value ^= rhs.value
+    public static func ^= (lhs: inout ClampedInteger, rhs: ClampedInteger) {
+        lhs.base ^= rhs.base
     }
 
-    prefix static func ~ (x: ClampedInteger) -> ClampedInteger {
-        Self(~x.value)
+    prefix public static func ~ (x: ClampedInteger) -> ClampedInteger {
+        Self(~x.base)
     }
 
-    static func >>= <RHS>(lhs: inout ClampedInteger, rhs: RHS) where RHS : BinaryInteger {
-        lhs.value >>= rhs
+    public static func >>= <RHS>(lhs: inout ClampedInteger, rhs: RHS) where RHS : BinaryInteger {
+        lhs.base >>= rhs
     }
 
-    static func <<= <RHS>(lhs: inout ClampedInteger, rhs: RHS) where RHS : BinaryInteger {
-        lhs.value <<= rhs
+    public static func <<= <RHS>(lhs: inout ClampedInteger, rhs: RHS) where RHS : BinaryInteger {
+        lhs.base <<= rhs
     }
 }

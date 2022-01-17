@@ -18,25 +18,25 @@ where Base: FixedWidthInteger, Base: SignedInteger {
     func test_add_underflow_big_lhs() {
         let value = ClampedInteger<Base>.min
         let overflowed = value + -1
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 
     func test_add_underflow_big_rhs() {
         let value = ClampedInteger<Base>.min
         let overflowed = -1 + value
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 
     func test_add_almost_underflow_big_lhs() {
         let value = ClampedInteger<Base>.min + 1
         let overflowed = value + -1
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 
     func test_add_almost_underflow_big_rhs() {
         let value = ClampedInteger<Base>.min + 1
         let overflowed = -1 + value
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 
     // MARK: - Subtract
@@ -44,43 +44,43 @@ where Base: FixedWidthInteger, Base: SignedInteger {
     func test_subtract_overflow_big_lhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = value - -1
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_subtract_overflow_big_rhs() {
         let value = ClampedInteger<Base>.min
         let overflowed = 1 - value
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_subtract_negative_number() {
         let value = ClampedInteger<Base>.min
         let overflowed = value - -1
-        XCTAssertEqual(overflowed.value, .min + 1)
+        XCTAssertEqual(overflowed.base, .min + 1)
     }
 
     func test_subtract_almost_overflow_big_lhs() {
         let value = ClampedInteger<Base>.max - 1
         let overflowed = value - -1
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_subtract_almost_overflow_big_rhs() {
         let value = ClampedInteger<Base>.min + 1
         let overflowed = 1 - value
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_subtract_underflow_big_rhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = -1 - value
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 
     func test_subtract_almost_underflow_big_rhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = 0 - value
-        XCTAssertEqual(overflowed.value, .min + 1)
+        XCTAssertEqual(overflowed.base, .min + 1)
     }
 
     // MARK: - Multiply
@@ -88,25 +88,25 @@ where Base: FixedWidthInteger, Base: SignedInteger {
     func test_multiply_overflow_swap_sign_big_lhs() {
         let value = ClampedInteger<Base>.min
         let overflowed = value * -1
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_multiply_overflow_swap_sign_big_rhs() {
         let value = ClampedInteger<Base>.min
         let overflowed = -1 * value
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_multiply_underflow_swap_sign_big_lhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = value * -1
-        XCTAssertEqual(overflowed.value, .min + 1)
+        XCTAssertEqual(overflowed.base, .min + 1)
     }
 
     func test_multiply_underflow_swap_sign_big_rhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = -1 * value
-        XCTAssertEqual(overflowed.value, .min + 1)
+        XCTAssertEqual(overflowed.base, .min + 1)
     }
 }
 
@@ -117,25 +117,25 @@ class ClampedIntegerBaseTests<Base>: XCTestCase where Base: FixedWidthInteger {
     func test_add_overflow_big_lhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = value + 1
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_add_overflow_big_rhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = 1 + value
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_add_almost_overflow_big_lhs() {
         let value = ClampedInteger<Base>.max - 1
         let overflowed = value + 1
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_add_almost_overflow_big_rhs() {
         let value = ClampedInteger<Base>.max - 1
         let overflowed = 1 + value
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     // MARK: - Subtract
@@ -143,13 +143,13 @@ class ClampedIntegerBaseTests<Base>: XCTestCase where Base: FixedWidthInteger {
     func test_subtract_underflow_big_lhs() {
         let value = ClampedInteger<Base>.min
         let overflowed = value - 1
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 
     func test_subtract_almost_underflow_big_lhs() {
         let value = ClampedInteger<Base>.min + 1
         let overflowed = value - 1
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 
     // MARK: - Multiply
@@ -157,24 +157,24 @@ class ClampedIntegerBaseTests<Base>: XCTestCase where Base: FixedWidthInteger {
     func test_multiply_overflow_big_lhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = value * 2
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_multiply_overflow_big_rhs() {
         let value = ClampedInteger<Base>.max
         let overflowed = 2 * value
-        XCTAssertEqual(overflowed.value, .max)
+        XCTAssertEqual(overflowed.base, .max)
     }
 
     func test_multiply_underflow_big_lhs() {
         let value = ClampedInteger<Base>.min
         let overflowed = value * 2
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 
     func test_multiply_underflow_big_rhs() {
         let value = ClampedInteger<Base>.min
         let overflowed = 2 * value
-        XCTAssertEqual(overflowed.value, .min)
+        XCTAssertEqual(overflowed.base, .min)
     }
 }
