@@ -31,9 +31,9 @@ extension ClampedInteger where Base == Int {
 
 extension ClampedInteger {
     public init<T>(_ source: T) where T : BinaryInteger {
-        if source < T(Base.min) {
+        if source < Base.min {
             base = .min
-        } else if source > T(Base.max) {
+        } else if source > Base.max {
             base = .max
         } else {
             base = Base(source)

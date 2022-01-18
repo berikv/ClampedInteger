@@ -14,6 +14,16 @@ final class ClampedIntegerInitTests: XCTestCase {
         XCTAssertEqual(clamped, .min)
     }
 
+    func test_smaller_int() {
+        let clamped = ClampedInteger<UInt>(Int(1))
+        XCTAssertEqual(clamped, 1)
+    }
+
+    func test_smaller_negative_int() {
+        let clamped = ClampedInteger<Int>(Int16.min)
+        XCTAssertEqual(clamped, -32768)
+    }
+
     func test_big_double() {
         let bigDouble = Double.greatestFiniteMagnitude
         let clamped = ClampedInteger<Int>.init(bigDouble)
