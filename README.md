@@ -20,15 +20,22 @@ An Integer type that clamps its value to its minimum and maximum instead of over
 ClampedInteger is generic over FixedWidthIntegers and can be used with any fixed with integer type:
 
 ```swift
-    let big = ClampedInteger<UInt16>.max
-    big + 10 == .max // true
+    let big = ClampedInteger<UInt16>(21)
+    big * 21 == 255 // true
+```
+
+The clamping behavior may lead to surprising results.
+In this example the literal `-10` is clamped to the minimum value of UInt (which is `0`).
+
+```swift
+    ClampedInteger<UInt>(-10) == 0 // true
 ```
 
 ## Install
 
 ### Package.swift
 
-Edit the Package.swift file. Add the GamCenterUI as a dependency:
+Edit the Package.swift file. Add the ClampedInteger as a dependency:
  
 ```
 let package = Package(
