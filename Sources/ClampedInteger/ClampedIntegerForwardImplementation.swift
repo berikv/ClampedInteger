@@ -23,18 +23,6 @@ extension ClampedInteger: FixedWidthInteger {
     public var leadingZeroBitCount: Int { base.leadingZeroBitCount }
     public var byteSwapped: ClampedInteger<Base> { Self(base.byteSwapped) }
 
-    public func addingReportingOverflow(_ rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
-        return (self + rhs, false)
-    }
-
-    public func subtractingReportingOverflow(_ rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
-        return (self - rhs, false)
-    }
-
-    public func multipliedReportingOverflow(by rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
-        return (self * rhs, false)
-    }
-
     public func dividedReportingOverflow(by rhs: ClampedInteger<Base>) -> (partialValue: ClampedInteger<Base>, overflow: Bool) {
         let result = base.dividedReportingOverflow(by: rhs.base)
         return (Self(result.partialValue), result.overflow)
